@@ -129,15 +129,10 @@
 		C3647E9B1B43A472008A52D1 /* Lines */ = {
 			isa = PBXGroup;
 			children = (
-				C3647E9F1B43A472008A52D1 /* AppDelegate.h */,
-				C3647EA01B43A472008A52D1 /* AppDelegate.m */,
-				C3647EA21B43A472008A52D1 /* ViewController.h */,
-				C3647EA31B43A472008A52D1 /* ViewController.m */,
-				C3647EA51B43A472008A52D1 /* Main.storyboard */,
-				C3647EA81B43A472008A52D1 /* Assets.xcassets */,
-				C3647EAA1B43A472008A52D1 /* LaunchScreen.storyboard */,
-				C3647EAD1B43A472008A52D1 /* Info.plist */,
+				C3647EDC1B43A536008A52D1 /* Graphics */,
 				C3647E9C1B43A472008A52D1 /* Supporting Files */,
+				C3647EDA1B43A516008A52D1 /* Views */,
+				C3647EDB1B43A51C008A52D1 /* ViewControllers */,
 			);
 			path = Lines;
 			sourceTree = "<group>";
@@ -146,6 +141,9 @@
 			isa = PBXGroup;
 			children = (
 				C3647E9D1B43A472008A52D1 /* main.m */,
+				C3647EAD1B43A472008A52D1 /* Info.plist */,
+				C3647E9F1B43A472008A52D1 /* AppDelegate.h */,
+				C3647EA01B43A472008A52D1 /* AppDelegate.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -171,6 +169,32 @@
 				C3647ECC1B43A472008A52D1 /* Info.plist */,
 			);
 			path = "Lines WatchKit Extension";
+			sourceTree = "<group>";
+		};
+		C3647EDA1B43A516008A52D1 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C3647EAA1B43A472008A52D1 /* LaunchScreen.storyboard */,
+				C3647EA51B43A472008A52D1 /* Main.storyboard */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		C3647EDB1B43A51C008A52D1 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				C3647EA21B43A472008A52D1 /* ViewController.h */,
+				C3647EA31B43A472008A52D1 /* ViewController.m */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		C3647EDC1B43A536008A52D1 /* Graphics */ = {
+			isa = PBXGroup;
+			children = (
+				C3647EA81B43A472008A52D1 /* Assets.xcassets */,
+			);
+			name = Graphics;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -547,6 +571,7 @@
 				C3647ED11B43A472008A52D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C3647ED31B43A472008A52D1 /* Build configuration list for PBXNativeTarget "Lines WatchKit App" */ = {
 			isa = XCConfigurationList;
@@ -555,6 +580,7 @@
 				C3647ED51B43A472008A52D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C3647ED71B43A472008A52D1 /* Build configuration list for PBXNativeTarget "Lines" */ = {
 			isa = XCConfigurationList;
@@ -563,6 +589,7 @@
 				C3647ED91B43A472008A52D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
