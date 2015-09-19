@@ -12,26 +12,26 @@
 #import "InterfaceController.h"
 #import <math.h>
 
+const int kNumLines = 30;
+const int kSkipMin  = 3;
+const int kSkipMax  = 10;
+
 @interface InterfaceController () {
 
-  // private ivars
-  NSTimer *_linesTimer;
-  UIImage *_linesImg;
-
   // line vars (might not need all these here)
-  CGPoint pt1[100], pt2[100];
+  CGPoint pt1[kNumLines], pt2[kNumLines];
   int skipX1, skipY1, skipX2, skipY2;
-  int skipMin, skipMax;
   int ct, oldct, bt, colr_ct;
-  int numLines; // xres, yres;
   int colRed, colGreen, colBlue;
   int oldRed, oldGreen, oldBlue;
   int newRed, newGreen, newBlue;
   int skipRed, skipGreen, skipBlue;
-  int ptRed[100], ptGreen[100], ptBlue[100];
+  //int ptRed[kNumLines], ptGreen[kNumLines], ptBlue[kNumLines];
 }
 
 @property (assign, nonatomic) CGSize mainSize;
+@property (strong, nonatomic) UIImage *linesImg;
+@property (strong, nonatomic) NSTimer *linesTimer;
 
 @end
 
@@ -56,30 +56,23 @@
   
   self.mainSize = mainImageSize();
   NSLog(@"mainSize: %.0f x %.0f", self.mainSize.width, self.mainSize.height);
-  
+
   // TEST mainImg
   if (self.mainImg != nil) {
     
   }
-  
-  // start the lines
-  if (!_linesTimer) {
 
-    // init the context
-    UIGraphicsBeginImageContext(self.mainSize);
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
-    
+  // start the lines
+  if (!self.linesTimer) {
     [self setupLinesVars];
-    [self resetLines:ctx];
+    [self resetLines];
     [self startLinesTimer];
-    
-    UIGraphicsEndImageContext();
   }
 }
 
 - (void)didDeactivate {
   // This method is called when watch view controller is no longer visible
-  
+
   NSLog(@"didDeactivate");
   [self stopLinesTimer];
   [super didDeactivate];
@@ -99,13 +92,7 @@ int randomInt(int min, int max) {
   return (arc4random_uniform(max - min + 1) + min);
 }
 
-// REMOVE
-- (int)getRandWithMin:(int)min Max:(int)max {
-  return ((arc4random() % ((unsigned)RAND_MAX + 1)) % (max - min + 1)) + min;
-}
-
-CGSize mainImageSize()
-{
+CGSize mainImageSize() {
   // Returns an image size that fills the available space under the status bar (in points)
 
   // Since we're unable to query the WKInterfaceImage for it's size, we need to
@@ -136,7 +123,7 @@ CGSize mainImageSize()
   // Setup recurring timer for lines animation
 
   NSLog(@"timer started");
-  _linesTimer = [NSTimer scheduledTimerWithTimeInterval: 0.05f
+  self.linesTimer = [NSTimer scheduledTimerWithTimeInterval: 0.05f
                                                  target: self
                                                selector: @selector(drawTimer:)
                                                userInfo: nil
@@ -146,9 +133,9 @@ CGSize mainImageSize()
 - (void)stopLinesTimer {
   
   NSLog(@"timer stopped");
-  if (_linesTimer) {
-    [_linesTimer invalidate];
-    _linesTimer = nil;
+  if (self.linesTimer) {
+    [self.linesTimer invalidate];
+    self.linesTimer = nil;
   }
 }
 
@@ -157,16 +144,14 @@ CGSize mainImageSize()
   UIGraphicsBeginImageContext(self.mainSize);  // required or ctx will be nil
   CGContextRef ctx = UIGraphicsGetCurrentContext();
   if (ctx) {
-    if (_linesImg) {
-      [_linesImg drawInRect:CGRectMake(0, 0, self.mainSize.width, self.mainSize.height)];
-      //[_linesImg drawInRect:CGRectMake(0, 0, self.mainSize.width, self.mainSize.height) blendMode:kCGBlendModeNormal alpha:0.5];
+    if (self.linesImg) {
+      //[self.linesImg drawInRect:CGRectMake(0, 0, self.mainSize.width, self.mainSize.height)];
+      // try this instead for a fade-out effect
+      [self.linesImg drawInRect:CGRectMake(0, 0, self.mainSize.width, self.mainSize.height) blendMode:kCGBlendModeNormal alpha:0.95];
     }
     [self drawNextLine:ctx];
-    _linesImg = UIGraphicsGetImageFromCurrentImageContext();
-    [self.mainImg setImage:_linesImg];
-  }
-  else {
-    NSLog(@"ctx is NULL! (2)");
+    self.linesImg = UIGraphicsGetImageFromCurrentImageContext();
+    [self.mainImg setImage:self.linesImg];
   }
   UIGraphicsEndImageContext();
 }
@@ -176,47 +161,33 @@ CGSize mainImageSize()
 
 - (void)setupLinesVars {
   
-  // init lines vars
-  /* REMOVE
-  CGRect rect = [[WKInterfaceDevice currentDevice] screenBounds];
-  xres = rect.size.width;
-  yres = rect.size.height;
-  //*/
-  
   // set some const vars
-  numLines = 30;
   oldct = 0;
   ct = 1;
   bt = 0;
-  skipMin = 3;
-  skipMax = 10;
   skipRed = 0; skipGreen = 0; skipBlue = 0;
   colRed = 0; colGreen = 0; colBlue = 0;
-  for (int i=0; i < numLines; i++) {
-    ptRed[i] = 0; ptGreen[i] = 0; ptBlue[i] = 0;
-  }
+  //for (int i=0; i < kNumLines; i++) {
+  //  ptRed[i] = 0; ptGreen[i] = 0; ptBlue[i] = 0;
+  //}
 }
 
-- (void)resetLines:(CGContextRef)ctx {
+- (void)resetLines {
   
   // calculate initial skip values
-  skipX1 = randomInt(skipMin, skipMax);
-  if ([self getRandWithMin:0 Max:1]) { skipX1 *= -1; };
-  skipY1 = [self getRandWithMin:skipMin Max:skipMax];
-  if ([self getRandWithMin:0 Max:1]) { skipY1 *= -1; };
-  skipX2 = [self getRandWithMin:skipMin Max:skipMax];
-  if ([self getRandWithMin:0 Max:1]) { skipX2 *= -1; };
-  skipY2 = [self getRandWithMin:skipMin Max:skipMax];
-  if ([self getRandWithMin:0 Max:1]) { skipY2 *= -1; };
+  skipX1 = (randomInt(0, 1)) ? randomInt(kSkipMin, kSkipMax) : -randomInt(kSkipMin, kSkipMax);
+  skipY1 = (randomInt(0, 1)) ? randomInt(kSkipMin, kSkipMax) : -randomInt(kSkipMin, kSkipMax);
+  skipX2 = (randomInt(0, 1)) ? randomInt(kSkipMin, kSkipMax) : -randomInt(kSkipMin, kSkipMax);
+  skipY2 = (randomInt(0, 1)) ? randomInt(kSkipMin, kSkipMax) : -randomInt(kSkipMin, kSkipMax);
+
+  pt1[ct].x = randomInt(0, self.mainSize.width);
+  pt1[ct].y = randomInt(0, self.mainSize.height);
+  pt2[ct].x = randomInt(0, self.mainSize.width);
+  pt2[ct].y = randomInt(0, self.mainSize.height);
   
-  pt1[ct].x = [self getRandWithMin:0 Max:self.mainSize.width];
-  pt1[ct].y = [self getRandWithMin:0 Max:self.mainSize.height];
-  pt2[ct].x = [self getRandWithMin:0 Max:self.mainSize.width];
-  pt2[ct].y = [self getRandWithMin:0 Max:self.mainSize.height];
-  
-  newRed   = [self getRandWithMin:0 Max:1] * 255;
-  newGreen = [self getRandWithMin:0 Max:1] * 255;
-  newBlue  = [self getRandWithMin:0 Max:1] * 255;
+  newRed   = randomInt(0, 1) * 255;
+  newGreen = randomInt(0, 1) * 255;
+  newBlue  = randomInt(0, 1) * 255;
   colr_ct = 16;
 }
 
@@ -250,9 +221,9 @@ CGSize mainImageSize()
   colr_ct++;
   if (colr_ct >= 15) {
     colr_ct = 0;
-    oldRed    = newRed;   newRed   = [self getRandWithMin:0 Max:1] * 255;
-    oldGreen  = newGreen; newGreen = [self getRandWithMin:0 Max:1] * 255;
-    oldBlue   = newBlue;  newBlue  = [self getRandWithMin:0 Max:1] * 255;
+    oldRed    = newRed;   newRed   = randomInt(0, 1) * 255;
+    oldGreen  = newGreen; newGreen = randomInt(0, 1) * 255;
+    oldBlue   = newBlue;  newBlue  = randomInt(0, 1) * 255;
     
     skipRed   = (newRed == oldRed) ? 0 : ((newRed > oldRed) ? 16 : -16);
     skipGreen = (newGreen == oldGreen) ? 0 : ((newGreen > oldGreen) ? 16 : -16);
@@ -268,37 +239,38 @@ CGSize mainImageSize()
   
   // erase line
   bt = ct + 1;
-  if (bt >= numLines) { bt = 0; }
-  CGContextSetRGBStrokeColor(ctx, 0, 0, 0, 1);  // erase with black
-  [self drawFourLinesFrom:pt1[bt] To:pt2[bt] Context:ctx];
+  if (bt >= kNumLines) { bt = 0; }
+//  CGContextSetRGBStrokeColor(ctx, 0, 0, 0, 1);  // erase with black
+//  [self drawFourLinesFrom:pt1[bt] To:pt2[bt] Context:ctx];
   
   // increment array index
   oldct = ct;
   ct++;
-  if (ct >= numLines) { ct = 0; }
+  if (ct >= kNumLines) { ct = 0; }
   
   // draw new line
   pt1[ct].x = pt1[oldct].x + skipX1;
   pt1[ct].y = pt1[oldct].y + skipY1;
   pt2[ct].x = pt2[oldct].x + skipX2;
   pt2[ct].y = pt2[oldct].y + skipY2;
-  ptRed[ct]   = colRed;
-  ptGreen[ct] = colGreen;
-  ptBlue[ct]  = colBlue;
+  //ptRed[ct]   = colRed;
+  //ptGreen[ct] = colGreen;
+  //ptBlue[ct]  = colBlue;
   
   CGContextSetRGBStrokeColor(ctx, (colRed / 256.0f), (colGreen / 256.0f), (colBlue / 256.0f), 1);
+  // void CGContextSetStrokeColorWithColor ( CGContextRef c, CGColorRef color );
   
   [self drawFourLinesFrom:pt1[ct] To:pt2[ct] Context:ctx];
   
   // reverse direction of step values of points that hit border
-  if (pt1[ct].x < 0)     { skipX1 = [self getRandWithMin:skipMin Max:skipMax];      }
-  if (pt1[ct].x >= self.mainSize.width) { skipX1 = [self getRandWithMin:skipMin Max:skipMax] * -1; }
-  if (pt1[ct].y < 0)     { skipY1 = [self getRandWithMin:skipMin Max:skipMax];      }
-  if (pt1[ct].y >= self.mainSize.height) { skipY1 = [self getRandWithMin:skipMin Max:skipMax] * -1; }
-  if (pt2[ct].x < 0)     { skipX2 = [self getRandWithMin:skipMin Max:skipMax];      }
-  if (pt2[ct].x >= self.mainSize.width) { skipX2 = [self getRandWithMin:skipMin Max:skipMax] * -1; }
-  if (pt2[ct].y < 0)     { skipY2 = [self getRandWithMin:skipMin Max:skipMax];      }
-  if (pt2[ct].y >= self.mainSize.height) { skipY2 = [self getRandWithMin:skipMin Max:skipMax] * -1; }
+  if (pt1[ct].x < 0)                     { skipX1 = randomInt(kSkipMin, kSkipMax);      }
+  if (pt1[ct].x >= self.mainSize.width)  { skipX1 = randomInt(kSkipMin, kSkipMax) * -1; }
+  if (pt1[ct].y < 0)                     { skipY1 = randomInt(kSkipMin, kSkipMax);      }
+  if (pt1[ct].y >= self.mainSize.height) { skipY1 = randomInt(kSkipMin, kSkipMax) * -1; }
+  if (pt2[ct].x < 0)                     { skipX2 = randomInt(kSkipMin, kSkipMax);      }
+  if (pt2[ct].x >= self.mainSize.width)  { skipX2 = randomInt(kSkipMin, kSkipMax) * -1; }
+  if (pt2[ct].y < 0)                     { skipY2 = randomInt(kSkipMin, kSkipMax);      }
+  if (pt2[ct].y >= self.mainSize.height) { skipY2 = randomInt(kSkipMin, kSkipMax) * -1; }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
