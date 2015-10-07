@@ -12,6 +12,7 @@ It's based on my first iOS app ***Lines!*** which was released to the App Store 
 ![](img/screenshot1.png)
 ![](img/screenshot2.png)
 ![](img/screenshot3.png)
+![](img/screenshot4.png)
 
 ## How It Works
 
