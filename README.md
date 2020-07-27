@@ -1,18 +1,16 @@
 ## Lines iOS Watch App
 
-By Carl Gorringe <car1@gorringe.org>
+By [Carl Gorringe](https://carl.gorringe.org)
 
 This app demonstrates dynamically generated animations using *CoreGraphics* on an Apple Watch running WatchOS 2.0.
 
-It's based on my first iOS app ***Lines!*** which was released to the App Store in Sept. 2010.  I'll be updating the app so that it'll work on the watch too.
+It's based on my first iOS app ***Lines!*** which was released to the App Store in Sept. 2010, and which has been updated to work on the watch.
 
+[![Available on the AppStore](img/badge_appstore.png)](https://itunes.apple.com/us/app/lines/id390391751)
 
-[![Available on the AppStore](img/app_store_badge.jpg)](https://itunes.apple.com/us/app/lines/id390391751)
-
-![](img/screenshot1.png)
-![](img/screenshot2.png)
-![](img/screenshot3.png)
-![](img/screenshot4.png)
+|     |     |     |
+| --- | --- | --- |
+![](img/screenshot2.png) | ![](img/screenshot3.png) | ![](img/screenshot4.png)
 
 ## How It Works
 
